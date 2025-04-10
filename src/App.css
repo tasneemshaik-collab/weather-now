@@ -1,0 +1,26 @@
+.app {
+  text-align: center;
+  font-family: sans-serif;
+  padding: 2rem;
+  background-color: #f0f0f0;
+  min-height: 100vh;
+}
+
+input {
+  padding: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.weather-info {
+  margin-top: 2rem;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  display: inline-block;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
