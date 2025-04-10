@@ -1,12 +1,32 @@
-# React + Vite
+# Weather Now ☁️🌤️
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Weather Now is a simple weather app built with **React + Vite**. It lets you check current weather details for any city using a clean and modern UI.  
 
-Currently, two official plugins are available:
+This project uses:
+- Vite for fast development setup
+- React for the frontend
+- OpenWeatherMap API for weather data
+- Environment variables for API security
+- ESLint for clean code
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- Real-time weather fetching
+- City search functionality
+- Clean UI with responsive design
+- Uses `.env` for API key management
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Dev Notes
+
+If you're expanding this project, consider:
+- Adding weather icons
+- Adding daily/weekly forecasts
+- Geolocation support
+
+---
+
+### Setup
+
+```bash
+npm install
+npm run dev
