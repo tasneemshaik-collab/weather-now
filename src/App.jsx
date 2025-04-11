@@ -6,33 +6,37 @@ function App() {
   const [weather, setWeather] = useState(null);
 
   const getWeather = async () => {
-    if (!city) return alert('Please enter a city name');
-
+    if (!city) return;
     try {
-      const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${import.meta.env.VITE_API_KEY}&units=metric`
-      );
+      const apiKey = import.meta.env.VITE_API_KEY;
 
+      // ✅ Debug: log the full URL
+      console.log(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`);
+
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`
+      );
       const data = await response.json();
 
       if (response.ok) {
         setWeather(data);
       } else {
-        alert(data.message);
+        alert(data.message || 'City not found!');
         setWeather(null);
       }
     } catch (error) {
-      alert('Error fetching weather');
-      console.error(error);
+      console.error('Error fetching weather:', error);
+      alert('Something went wrong!');
     }
   };
 
   return (
-    <div className="app">
-      <h1>🌤️ WeatherNow</h1>
+    <div className="App">
+      <h1>🌤 WeatherNow</h1>
+      <h3>Tasneem Shaik</h3>
       <input
         type="text"
-        placeholder="Enter city"
+        placeholder="Enter city name"
         value={city}
         onChange={(e) => setCity(e.target.value)}
       />
@@ -41,9 +45,8 @@ function App() {
       {weather && (
         <div className="weather-info">
           <h2>{weather.name}, {weather.sys.country}</h2>
-          <p>🌡️ Temperature: {weather.main.temp}°C</p>
-          <p>🌥️ Weather: {weather.weather[0].description}</p>
-          <p>💨 Wind Speed: {weather.wind.speed} m/s</p>
+          <p>Temperature: {weather.main.temp} °C</p>
+          <p>Condition: {weather.weather[0].description}</p>
         </div>
       )}
     </div>

@@ -1,32 +1,27 @@
-# Weather Now ☁️🌤️
+# 🌤️ WeatherNow
 
-Weather Now is a simple weather app built with **React + Vite**. It lets you check current weather details for any city using a clean and modern UI.  
+WeatherNow is a simple React + Vite app that fetches and displays real-time weather data using the OpenWeatherMap API.
 
-This project uses:
-- Vite for fast development setup
-- React for the frontend
-- OpenWeatherMap API for weather data
-- Environment variables for API security
-- ESLint for clean code
+### 🔗 Live Demo
+👉 [Click here to view](https://weather-now-rosy.vercel.app)
 
-## Features
+### 🚀 Tech Stack
+- React
+- Vite
+- OpenWeatherMap API
+- Vercel (for deployment)
 
-- Real-time weather fetching
-- City search functionality
-- Clean UI with responsive design
-- Uses `.env` for API key management
+### 📦 Features
+- Search any city
+- Real-time weather updates
+- Fast and responsive UI
 
-## Dev Notes
-
-If you're expanding this project, consider:
-- Adding weather icons
-- Adding daily/weekly forecasts
-- Geolocation support
+### 🔑 Environment Variables
+- `VITE_API_KEY`: Your OpenWeatherMap API Key (stored securely)
 
 ---
 
-### Setup
-
-```bash
-npm install
-npm run dev
+### 💡 Future Improvements
+- Show weather icons and background changes
+- Add forecast for the next few days
+- Improve mobile responsiveness
