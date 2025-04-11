@@ -9,40 +9,43 @@ function App() {
 
   const apiKey = 'YOUR_API_KEY'; // Replace with your OpenWeatherMap API key
 
-  const getWeather = async () => {
-    if (!city) return;
-
+  const fetchWeatherData = async (cityName) => {
     try {
       const weatherRes = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`
+        `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&appid=${apiKey}`
       );
       const weatherData = await weatherRes.json();
       setWeather(weatherData);
+      setCity(weatherData.name); // ensures consistent display
 
       const forecastRes = await fetch(
-        `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${apiKey}`
+        `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&units=metric&appid=${apiKey}`
       );
       const forecastData = await forecastRes.json();
-
-      const daily = forecastData.list.filter(reading => reading.dt_txt.includes("12:00:00")).slice(0, 5);
+      const daily = forecastData.list.filter(item => item.dt_txt.includes("12:00:00")).slice(0, 5);
       setForecast(daily);
-    } catch (err) {
-      console.error("Error fetching weather:", err);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  const getWeather = () => {
+    if (city.trim() !== '') {
+      fetchWeatherData(city);
     }
   };
 
   const getLocationWeather = () => {
-    navigator.geolocation.getCurrentPosition(async position => {
+    navigator.geolocation.getCurrentPosition(async (position) => {
       const { latitude, longitude } = position.coords;
       try {
         const res = await fetch(
           `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${apiKey}`
         );
         const data = await res.json();
-        setCity(data.name);
-        setWeather(data);
+        fetchWeatherData(data.name);
       } catch (err) {
-        console.error("Error fetching location weather:", err);
+        console.error("Error getting location weather:", err);
       }
     });
   };
