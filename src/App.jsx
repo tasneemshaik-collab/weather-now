@@ -26,14 +26,14 @@ function App() {
       }
     } catch (error) {
       console.error('Error fetching weather:', error);
-      alert('Something went wrong!');
+      alert('Somethissng went wrong!');
     }
   };
 
   return (
     <div className="App">
       <h1>🌤 WeatherNow</h1>
-      <h3>Tasneem Shaik</h3>
+      <h3> By Tasneem Shaik</h3>
       <input
         type="text"
         placeholder="Enter city name"
