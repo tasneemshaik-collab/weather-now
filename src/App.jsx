@@ -1,94 +1,119 @@
-import React, { useState } from "react";
-import "./App.css";
+import React, { useState } from 'react';
+import './App.css';
 
-function App() {
-  const [city, setCity] = useState("");
-  const [weather, setWeather] = useState(null);
-  const [loading, setLoading] = useState(false);
+const App = () => {
+  const [city, setCity] = useState('');
+  const [weatherData, setWeatherData] = useState(null);
+  const [forecastData, setForecastData] = useState([]);
+  const [theme, setTheme] = useState('light');
 
-  const fetchWeather = async () => {
-    if (!city) return;
-    setLoading(true);
+  const apiKey = import.meta.env.VITE_API_KEY; // Make sure it's in your .env file
+
+  const getWeather = async (cityName) => {
     try {
-      const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${import.meta.env.VITE_API_KEY}&units=metric`
-      );
-      const data = await response.json();
-      if (data.cod === 200) {
-        setWeather(data);
+      const [weatherRes, forecastRes] = await Promise.all([
+        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}&units=metric`),
+        fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${apiKey}&units=metric`)
+      ]);
+
+      const weather = await weatherRes.json();
+      const forecast = await forecastRes.json();
+
+      if (weather.cod === 200 && forecast.cod === "200") {
+        setWeatherData(weather);
+        const dailyForecast = forecast.list.filter((reading) =>
+          reading.dt_txt.includes("12:00:00")
+        );
+        setForecastData(dailyForecast);
       } else {
-        alert("City not found!");
+        alert('City not found!');
       }
     } catch (error) {
-      console.error("Fetch error:", error);
+      console.error('Error fetching weather or forecast:', error);
     }
-    setLoading(false);
   };
 
-  const getWeatherByLocation = () => {
+  const getLocationWeather = () => {
     if (navigator.geolocation) {
-      setLoading(true);
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
-          try {
-            const response = await fetch(
-              `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${import.meta.env.VITE_API_KEY}&units=metric`
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const { latitude, longitude } = position.coords;
+        try {
+          const [weatherRes, forecastRes] = await Promise.all([
+            fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`),
+            fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`)
+          ]);
+
+          const weather = await weatherRes.json();
+          const forecast = await forecastRes.json();
+
+          if (weather.cod === 200 && forecast.cod === "200") {
+            setWeatherData(weather);
+            setCity(weather.name);
+            const dailyForecast = forecast.list.filter((reading) =>
+              reading.dt_txt.includes("12:00:00")
             );
-            const data = await response.json();
-            setWeather(data);
-            setCity(data.name);
-          } catch (error) {
-            console.error("Location error:", error);
+            setForecastData(dailyForecast);
           }
-          setLoading(false);
-        },
-        (error) => {
-          alert("Unable to retrieve your location.");
-          console.error("Geolocation error:", error);
-          setLoading(false);
+        } catch (error) {
+          console.error('Location fetch error:', error);
         }
-      );
+      });
     } else {
-      alert("Geolocation not supported.");
+      alert('Geolocation not supported by your browser.');
     }
+  };
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
   };
 
   return (
-    <div className="app">
+    <div className={`app ${theme}`}>
       <h1>🌦️ WeatherNow by Tasneem</h1>
-      <p>Check the current weather in any city around the world!</p>
+      <p>Check the current weather and 5-day forecast!</p>
 
-      <div className="input-section">
+      <div className="search">
         <input
           type="text"
-          placeholder="Enter city name..."
           value={city}
+          placeholder="Enter city name"
           onChange={(e) => setCity(e.target.value)}
         />
-        <button onClick={fetchWeather}>Get Weather</button>
+        <button onClick={() => getWeather(city)}>Get Weather</button>
       </div>
 
-      {loading && <p className="loading">Loading weather data...</p>}
-
-      {weather && (
+      {weatherData && (
         <div className="weather-card">
-          <h2>{weather.name}, {weather.sys.country}</h2>
-          <p>🌡️ {weather.main.temp}°C</p>
-          <p>☁️ {weather.weather[0].description}</p>
-          <p>💨 Wind: {weather.wind.speed} m/s</p>
-          <p>💧 Humidity: {weather.main.humidity}%</p>
+          <h2>{weatherData.name}, {weatherData.sys.country}</h2>
+          <p>🌡️ Temp: {weatherData.main.temp}°C</p>
+          <p>☁️ Condition: {weatherData.weather[0].description}</p>
+          <p>💧 Humidity: {weatherData.main.humidity}%</p>
+          <p>💨 Wind: {weatherData.wind.speed} m/s</p>
         </div>
       )}
 
-      <h3 className="explore">Explore More</h3>
-      <div className="actions">
-        <button onClick={getWeatherByLocation}>📍 Use My Location</button>
-        <button onClick={() => alert("Feature coming soon!")}>📅 5-Day Forecast</button>
-        <button onClick={() => alert("Dark theme coming soon!")}>🎨 Switch Theme</button>
+      {forecastData.length > 0 && (
+        <div className="forecast">
+          <h3>📅 5-Day Forecast</h3>
+          <div className="forecast-list">
+            {forecastData.map((day, index) => (
+              <div key={index} className="forecast-item">
+                <p><strong>{new Date(day.dt_txt).toLocaleDateString()}</strong></p>
+                <p>🌡️ {day.main.temp}°C</p>
+                <p>☁️ {day.weather[0].description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <h3>Explore More</h3>
+      <div className="extras">
+        <button onClick={getLocationWeather}>📍 Use My Location</button>
+        <button onClick={toggleTheme}>🎨 Switch Theme</button>
       </div>
     </div>
   );
-}
+};
 
 export default App;
