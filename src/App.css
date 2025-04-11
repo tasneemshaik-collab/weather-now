@@ -1,80 +1,111 @@
-body {
+:root {
+  --bg-light: #f8f8f8;
+  --text-light: #111;
+  --bg-dark: #222;
+  --text-dark: #f1f1f1;
+  --primary: #5c6bc0;
+  --card-bg: #ffffff;
+  --card-dark-bg: #333333;
+}
+
+* {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.app.light {
-  background-color: #f5f5f5;
-  color: #222;
+html, body {
+  width: 100%;
+  overflow-x: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.app.dark {
-  background-color: #222;
-  color: #f5f5f5;
-}
-
-.container {
-  max-width: 900px;
-  margin: 0 auto;
+.App {
+  text-align: center;
   padding: 2rem;
-  min-height: 100vh;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-h1 {
-  font-size: 2.5rem;
+.App.light {
+  background-color: var(--bg-light);
+  color: var(--text-light);
 }
 
-.input-group input {
-  padding: 0.8rem;
-  width: 60%;
-  border-radius: 8px;
+.App.dark {
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+.search {
+  margin: 1rem auto;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.search input {
+  padding: 0.5rem 1rem;
   border: none;
-  margin-right: 1rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  width: 200px;
 }
 
-.input-group button {
-  padding: 0.8rem 1.5rem;
-  background-color: #5673f7;
+.search button {
+  background-color: var(--primary);
   color: white;
   border: none;
+  padding: 0.6rem 1.2rem;
   border-radius: 8px;
   cursor: pointer;
 }
 
 .button-group {
-  margin-top: 1rem;
+  margin: 1rem auto;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .button-group button {
-  margin-right: 1rem;
-  padding: 0.6rem 1rem;
-  background-color: #5673f7;
+  background-color: var(--primary);
   color: white;
   border: none;
+  padding: 0.5rem 1rem;
   border-radius: 8px;
   cursor: pointer;
 }
 
-.weather-card {
-  background-color: rgba(0,0,0,0.1);
-  margin-top: 2rem;
+.weather-box {
+  margin: 2rem auto;
   padding: 1rem;
   border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  text-align: center;
+  background-color: var(--card-bg);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+}
+
+.App.dark .weather-box {
+  background-color: var(--card-dark-bg);
 }
 
 .forecast {
   display: flex;
-  flex-wrap: wrap;
+  justify-content: center;
   gap: 1rem;
-  margin-top: 1rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
 }
 
 .forecast-card {
-  background-color: rgba(0,0,0,0.1);
+  background-color: var(--card-bg);
   padding: 1rem;
   border-radius: 12px;
-  flex: 1 1 150px;
-  text-align: center;
+  width: 150px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.App.dark .forecast-card {
+  background-color: var(--card-dark-bg);
 }
