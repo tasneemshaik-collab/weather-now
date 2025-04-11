@@ -27,23 +27,13 @@ function App() {
         return;
       }
       setWeather(weatherData);
-
-      const { coord } = weatherData;
-      const forecastRes = await fetch(
-        `https://api.openweathermap.org/data/2.5/forecast?lat=${coord.lat}&lon=${coord.lon}&appid=${apiKey}&units=metric`
-      );
-      const forecastData = await forecastRes.json();
-
-      // Reduce forecast data to 5 days (one per day at noon)
-      const daily = forecastData.list.filter((item) =>
-        item.dt_txt.includes("12:00:00")
-      );
-      setForecast(daily.slice(0, 5));
+      setForecast([]); // Clear forecast until user clicks forecast
     } catch (err) {
       alert("Error fetching weather data.");
       console.error(err);
     }
   };
+  
 
   const handleCityChange = (e) => setCity(e.target.value);
 
@@ -60,6 +50,25 @@ function App() {
       () => alert("Location access denied.")
     );
   };
+
+  const handleShowForecast = async () => {
+    if (!weather || !weather.coord) return;
+  
+    const { lat, lon } = weather.coord;
+    try {
+      const forecastRes = await fetch(
+        `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
+      );
+      const forecastData = await forecastRes.json();
+      const daily = forecastData.list.filter((item) =>
+        item.dt_txt.includes("12:00:00")
+      );
+      setForecast(daily.slice(0, 5));
+    } catch (err) {
+      alert("Error fetching forecast.");
+    }
+  };
+  
 
   const fetchWeatherByCoords = async (lat, lon) => {
     try {
@@ -80,7 +89,6 @@ function App() {
   return (
     <div className="app">
       <h1>🌦️ WeatherNow by Tasneem</h1>
-      <p>Get the current weather and forecast anywhere!</p>
 
       <div className="controls">
         <input
@@ -91,6 +99,7 @@ function App() {
         />
         <button onClick={handleGetWeather}>Get Weather</button>
         <button onClick={handleUseMyLocation}>📍 Use My Location</button>
+        <button onClick={handleShowForecast}>📅 5-Day Forecast</button>
         <button onClick={toggleTheme}>🌓 Switch Theme</button>
       </div>
 
