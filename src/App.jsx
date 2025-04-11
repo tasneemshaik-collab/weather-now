@@ -1,94 +1,112 @@
-import React, { useState } from 'react';
-import './App.css';
+import React, { useState } from "react";
+import "./App.css";
+
+const API_KEY = "d31120fef343431863eb0d63f927e140"; // Replace with your OpenWeatherMap API key
 
 function App() {
-  const [city, setCity] = useState('');
-  const [weather, setWeather] = useState(null);
-  const [forecast, setForecast] = useState([]);
-  const [darkMode, setDarkMode] = useState(false);
+  const [city, setCity] = useState("");
+  const [weatherData, setWeatherData] = useState(null);
+  const [forecastData, setForecastData] = useState([]);
+  const [theme, setTheme] = useState("dark");
 
-  const apiKey = 'YOUR_API_KEY'; // Replace with your OpenWeatherMap API key
-
-  const fetchWeatherData = async (cityName) => {
+  const fetchWeather = async (cityName) => {
     try {
-      const weatherRes = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&appid=${apiKey}`
+      const res = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&appid=${API_KEY}`
       );
-      const weatherData = await weatherRes.json();
-      setWeather(weatherData);
-      setCity(weatherData.name); // ensures consistent display
-
-      const forecastRes = await fetch(
-        `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&units=metric&appid=${apiKey}`
-      );
-      const forecastData = await forecastRes.json();
-      const daily = forecastData.list.filter(item => item.dt_txt.includes("12:00:00")).slice(0, 5);
-      setForecast(daily);
+      const data = await res.json();
+      setWeatherData(data);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Weather Error:", error);
     }
   };
 
-  const getWeather = () => {
-    if (city.trim() !== '') {
-      fetchWeatherData(city);
+  const fetchForecast = async (cityName) => {
+    try {
+      const res = await fetch(
+        `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&units=metric&appid=${API_KEY}`
+      );
+      const data = await res.json();
+      const daily = data.list.filter((reading) => reading.dt_txt.includes("12:00:00"));
+      setForecastData(daily);
+    } catch (error) {
+      console.error("Forecast Error:", error);
     }
   };
 
-  const getLocationWeather = () => {
+  const handleGetWeather = () => {
+    if (city.trim()) {
+      fetchWeather(city);
+      setForecastData([]); // reset forecast view
+    }
+  };
+
+  const handleUseLocation = () => {
     navigator.geolocation.getCurrentPosition(async (position) => {
       const { latitude, longitude } = position.coords;
       try {
         const res = await fetch(
-          `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${apiKey}`
+          `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${API_KEY}`
         );
         const data = await res.json();
-        fetchWeatherData(data.name);
-      } catch (err) {
-        console.error("Error getting location weather:", err);
+        setWeatherData(data);
+        setCity(data.name);
+        setForecastData([]);
+      } catch (error) {
+        console.error("Location Error:", error);
       }
     });
   };
 
+  const handleGetForecast = () => {
+    if (city.trim()) {
+      fetchForecast(city);
+    }
+  };
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  };
+
   return (
-    <div className={`app ${darkMode ? 'dark' : ''}`}>
-      <h1>🌦️ WeatherNow by Tasneem</h1>
-      <p>Check the current weather in any city around the world!</p>
-
-      <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Enter city"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-        />
-        <button onClick={getWeather}>Get Weather</button>
-      </div>
-
-      {weather && (
-        <div className="weather-card">
-          <h2>{weather.name}</h2>
-          <p>🌡️ {weather.main.temp}°C</p>
-          <p>🌥️ {weather.weather[0].description}</p>
+    <div className={`app ${theme}`}>
+      <div className="container">
+        <h1>🌦️ WeatherNow by Tasneem</h1>
+        <p>Check the current weather in any city around the world!</p>
+        <div className="input-group">
+          <input
+            type="text"
+            placeholder="Enter city"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+          />
+          <button onClick={handleGetWeather}>Get Weather</button>
         </div>
-      )}
-
-      {forecast.length > 0 && (
-        <div className="forecast">
-          {forecast.map((day, idx) => (
-            <div key={idx} className="forecast-day">
-              <strong>{new Date(day.dt_txt).toLocaleDateString()}</strong>
-              <p>🌡️ {day.main.temp}°C</p>
-              <p>🌤️ {day.weather[0].description}</p>
-            </div>
-          ))}
+        <div className="button-group">
+          <button onClick={handleUseLocation}>📍 Use My Location</button>
+          <button onClick={handleGetForecast}>📅 5-Day Forecast</button>
+          <button onClick={toggleTheme}>🌓 Switch Theme</button>
         </div>
-      )}
 
-      <div className="buttons">
-        <button onClick={getLocationWeather}>📍 Use My Location</button>
-        <button onClick={getWeather}>📅 5-Day Forecast</button>
-        <button onClick={() => setDarkMode(prev => !prev)}>🌗 Switch Theme</button>
+        {weatherData && !forecastData.length && (
+          <div className="weather-card">
+            <h2>{weatherData.name}</h2>
+            <p>🌡️ {weatherData.main.temp}°C</p>
+            <p>🌤️ {weatherData.weather[0].description}</p>
+          </div>
+        )}
+
+        {forecastData.length > 0 && (
+          <div className="forecast-section">
+            {forecastData.map((day, index) => (
+              <div className="forecast-card" key={index}>
+                <h4>{new Date(day.dt_txt).toLocaleDateString()}</h4>
+                <p>🌡️ {day.main.temp}°C</p>
+                <p>🌤️ {day.weather[0].description}</p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
