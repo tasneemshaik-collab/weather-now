@@ -1,78 +1,60 @@
+:root {
+  --bg-color: #ffffff;
+  --text-color: #1a1a1a;
+  --card-bg: #f2f2f2;
+  --button-bg: #4f46e5;
+  --button-color: white;
+  --button-hover: #4338ca;
+}
+
+body.dark {
+  --bg-color: #1a1a1a;
+  --text-color: #ffffff;
+  --card-bg: #2a2a2a;
+  --button-bg: #2563eb;
+  --button-color: white;
+  --button-hover: #1d4ed8;
+}
+
 body {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background-color: var(--bg);
-  color: var(--text);
-}
-
-:root {
-  --bg: #f4f4f4;
-  --text: #222;
-  --card: white;
-  --button-bg: #4c6ef5;
-  --button-text: white;
-}
-
-.dark {
-  --bg: #121212;
-  --text: #eee;
-  --card: #1e1e1e;
-  --button-bg: #3f3fff;
-  --button-text: #eee;
+  font-family: "Segoe UI", sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .app {
-  min-height: 100vh;
+  text-align: center;
   padding: 2rem;
-  max-width: 960px;
-  margin: 0 auto;
 }
 
 .controls {
+  margin-top: 1.5rem;
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  margin-top: 1rem;
-}
-
-.controls input {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  flex: 1 1 200px;
-}
-
-.controls button {
-  padding: 0.5rem 1rem;
-  background-color: var(--button-bg);
-  color: var(--button-text);
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.weather-box {
-  background-color: var(--card);
-  padding: 1rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  margin-top: 2rem;
-  text-align: center;
-}
-
-.forecast-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-top: 2rem;
   justify-content: center;
 }
 
-.forecast-card {
-  background-color: var(--card);
-  padding: 1rem;
-  border-radius: 12px;
-  width: 140px;
-  text-align: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+input[type="text"] {
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 220px;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  background-color: var(--button-bg);
+  color: var(--button-color);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: 500;
+}
+
+button:hover {
+  background-color: var(--button-hover);
 }

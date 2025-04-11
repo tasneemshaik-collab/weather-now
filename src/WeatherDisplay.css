@@ -1,21 +1,12 @@
-.weather-display {
+.weather-card {
     background-color: var(--card-bg);
-    color: var(--text-color);
-    border-radius: 12px;
     padding: 1.5rem;
-    margin-top: 1rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-  
-  .weather-display h2 {
-    font-size: 1.75rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  .weather-display p {
-    margin: 0.25rem 0;
-    font-size: 1.2rem;
+    margin-top: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    transition: background-color 0.3s ease;
   }
   

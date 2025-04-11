@@ -1,24 +1,18 @@
-import React from 'react';
-import './WeatherDisplay.css';
+import React from "react";
+import "./WeatherDisplay.css";
 
-const WeatherDisplay = ({ weatherData }) => {
-  if (!weatherData) return null;
-
-  const { name, main, weather } = weatherData;
-  const temperature = main.temp;
-  const condition = weather[0].description;
+function WeatherDisplay({ weather }) {
+  const { name, main, weather: info, wind } = weather;
 
   return (
-    <div className="weather-display">
+    <div className="weather-card">
       <h2>{name}</h2>
-      <p>
-        <span role="img" aria-label="thermometer">🌡️</span> {temperature.toFixed(1)}°C
-      </p>
-      <p>
-        <span role="img" aria-label="weather-icon">🌥️</span> {condition}
-      </p>
+      <p>{info[0].description}</p>
+      <p>🌡 Temp: {main.temp}°C</p>
+      <p>💨 Wind: {wind.speed} m/s</p>
+      <p>💧 Humidity: {main.humidity}%</p>
     </div>
   );
-};
+}
 
 export default WeatherDisplay;

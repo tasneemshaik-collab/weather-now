@@ -6,9 +6,10 @@ function ForecastDisplay({ forecast }) {
     <div className="forecast-container">
       {forecast.map((item, index) => (
         <div key={index} className="forecast-card">
-          <p>{new Date(item.dt_txt).toLocaleDateString()}</p>
-          <p>🌡️ {item.main.temp}°C</p>
-          <p>{item.weather[0].description}</p>
+          <h4>{new Date(item.dt_txt).toLocaleDateString(undefined, { weekday: "short" })}</h4>
+          <p>{item.weather[0].main}</p>
+          <p>🌡 {item.main.temp}°C</p>
+          <p>💧 {item.main.humidity}%</p>
         </div>
       ))}
     </div>
