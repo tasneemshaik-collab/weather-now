@@ -11,7 +11,7 @@ function App() {
 
   const fetchWeather = async (cityName) => {
     try {
-      const apiKey = "YOUR_API_KEY";
+      const apiKey = "d31120fef343431863eb0d63f927e140";
       const weatherResponse = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&appid=${apiKey}`
       );
@@ -35,14 +35,14 @@ function App() {
     navigator.geolocation.getCurrentPosition((position) => {
       const { latitude, longitude } = position.coords;
       fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=YOUR_API_KEY`
+        `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=d31120fef343431863eb0d63f927e140`
       )
         .then((res) => res.json())
         .then((data) => {
           setWeather(data);
           setCity(data.name);
           return fetch(
-            `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&units=metric&appid=YOUR_API_KEY`
+            `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&units=metric&appid=d31120fef343431863eb0d63f927e140`
           );
         })
         .then((res) => res.json())
