@@ -3,114 +3,109 @@ import './App.css';
 
 const App = () => {
   const [city, setCity] = useState('');
-  const [weatherData, setWeatherData] = useState(null);
-  const [forecastData, setForecastData] = useState([]);
+  const [weather, setWeather] = useState(null);
+  const [forecast, setForecast] = useState([]);
   const [theme, setTheme] = useState('light');
+  const [showForecast, setShowForecast] = useState(false);
 
-  const apiKey = import.meta.env.VITE_API_KEY; // Make sure it's in your .env file
+  const API_KEY = 'd31120fef343431863eb0d63f927e140'; // Replace with your OpenWeatherMap API key
 
-  const getWeather = async (cityName) => {
+  const getWeather = async () => {
+    if (!city) return;
+
     try {
-      const [weatherRes, forecastRes] = await Promise.all([
-        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}&units=metric`),
-        fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${apiKey}&units=metric`)
-      ]);
-
-      const weather = await weatherRes.json();
-      const forecast = await forecastRes.json();
-
-      if (weather.cod === 200 && forecast.cod === "200") {
-        setWeatherData(weather);
-        const dailyForecast = forecast.list.filter((reading) =>
-          reading.dt_txt.includes("12:00:00")
-        );
-        setForecastData(dailyForecast);
-      } else {
-        alert('City not found!');
-      }
-    } catch (error) {
-      console.error('Error fetching weather or forecast:', error);
+      const res = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`
+      );
+      const data = await res.json();
+      setWeather(data);
+    } catch (err) {
+      console.error(err);
     }
   };
 
-  const getLocationWeather = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(async (position) => {
-        const { latitude, longitude } = position.coords;
-        try {
-          const [weatherRes, forecastRes] = await Promise.all([
-            fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`),
-            fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`)
-          ]);
+  const getForecast = async () => {
+    if (!city) return;
 
-          const weather = await weatherRes.json();
-          const forecast = await forecastRes.json();
-
-          if (weather.cod === 200 && forecast.cod === "200") {
-            setWeatherData(weather);
-            setCity(weather.name);
-            const dailyForecast = forecast.list.filter((reading) =>
-              reading.dt_txt.includes("12:00:00")
-            );
-            setForecastData(dailyForecast);
-          }
-        } catch (error) {
-          console.error('Location fetch error:', error);
-        }
-      });
-    } else {
-      alert('Geolocation not supported by your browser.');
+    try {
+      const res = await fetch(
+        `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=metric`
+      );
+      const data = await res.json();
+      const daily = data.list.filter((_, index) => index % 8 === 0);
+      setForecast(daily);
+    } catch (err) {
+      console.error(err);
     }
+  };
+
+  const toggleForecast = async () => {
+    if (!showForecast && city) await getForecast();
+    setShowForecast(prev => !prev);
   };
 
   const toggleTheme = () => {
-    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+    setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
+  };
+
+  const handleUseLocation = () => {
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      const { latitude, longitude } = position.coords;
+      try {
+        const res = await fetch(
+          `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`
+        );
+        const data = await res.json();
+        setCity(data.name);
+        setWeather(data);
+      } catch (err) {
+        console.error(err);
+      }
+    });
   };
 
   return (
     <div className={`app ${theme}`}>
-      <h1>🌦️ WeatherNow by Tasneem</h1>
-      <p>Check the current weather and 5-day forecast!</p>
+      <div className="container">
+        <h1>🌦️ WeatherNow by Tasneem</h1>
+        <p>Check the current weather in any city around the world!</p>
 
-      <div className="search">
-        <input
-          type="text"
-          value={city}
-          placeholder="Enter city name"
-          onChange={(e) => setCity(e.target.value)}
-        />
-        <button onClick={() => getWeather(city)}>Get Weather</button>
-      </div>
-
-      {weatherData && (
-        <div className="weather-card">
-          <h2>{weatherData.name}, {weatherData.sys.country}</h2>
-          <p>🌡️ Temp: {weatherData.main.temp}°C</p>
-          <p>☁️ Condition: {weatherData.weather[0].description}</p>
-          <p>💧 Humidity: {weatherData.main.humidity}%</p>
-          <p>💨 Wind: {weatherData.wind.speed} m/s</p>
+        <div className="input-group">
+          <input
+            type="text"
+            placeholder="Enter city..."
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+          />
+          <button onClick={getWeather}>Get Weather</button>
         </div>
-      )}
 
-      {forecastData.length > 0 && (
-        <div className="forecast">
-          <h3>📅 5-Day Forecast</h3>
-          <div className="forecast-list">
-            {forecastData.map((day, index) => (
-              <div key={index} className="forecast-item">
-                <p><strong>{new Date(day.dt_txt).toLocaleDateString()}</strong></p>
-                <p>🌡️ {day.main.temp}°C</p>
-                <p>☁️ {day.weather[0].description}</p>
+        {weather && (
+          <div className="weather-card">
+            <h2>{weather.name}</h2>
+            <p>🌡️ {weather.main.temp}°C</p>
+            <p>🌤️ {weather.weather[0].description}</p>
+          </div>
+        )}
+
+        {showForecast && forecast.length > 0 && (
+          <div className="forecast-container">
+            {forecast.map((item, index) => (
+              <div className="forecast-card" key={index}>
+                <strong>{new Date(item.dt_txt).toLocaleDateString()}</strong>
+                <p>🌡️ {item.main.temp}°C</p>
+                <p>🌤️ {item.weather[0].description}</p>
               </div>
             ))}
           </div>
-        </div>
-      )}
+        )}
 
-      <h3>Explore More</h3>
-      <div className="extras">
-        <button onClick={getLocationWeather}>📍 Use My Location</button>
-        <button onClick={toggleTheme}>🎨 Switch Theme</button>
+        <h3>Explore More</h3>
+        <div className="buttons">
+          <button onClick={handleUseLocation}>📍 Use My Location</button>
+          <button onClick={toggleForecast}>🗓️ 5-Day Forecast</button>
+          <button onClick={toggleTheme}>🎨 Switch Theme</button>
+        </div>
       </div>
     </div>
   );
