@@ -1,36 +1,78 @@
-
-body, html {
+body {
   margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
 }
 
-.App {
+:root {
+  --bg: #f4f4f4;
+  --text: #222;
+  --card: white;
+  --button-bg: #4c6ef5;
+  --button-text: white;
+}
+
+.dark {
+  --bg: #121212;
+  --text: #eee;
+  --card: #1e1e1e;
+  --button-bg: #3f3fff;
+  --button-text: #eee;
+}
+
+.app {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
   padding: 2rem;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-.container {
-  max-width: 800px;
-  width: 100%;
+  max-width: 960px;
   margin: 0 auto;
 }
 
-.weather-box {
-  width: 100%;
-  max-width: 400px;
-}
-
-.forecast {
-  width: 100%;
+.controls {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
+  margin-top: 1rem;
+}
+
+.controls input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  flex: 1 1 200px;
+}
+
+.controls button {
+  padding: 0.5rem 1rem;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.weather-box {
+  background-color: var(--card);
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.forecast-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
   justify-content: center;
+}
+
+.forecast-card {
+  background-color: var(--card);
+  padding: 1rem;
+  border-radius: 12px;
+  width: 140px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
