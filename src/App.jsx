@@ -1,127 +1,82 @@
-import React, { useState } from "react";
-import "./App.css";
+/* eslint-disable no-unused-vars */
+import React, { useState } from 'react';
+import './App.css';
 
-const API_KEY = "d31120fef343431863eb0d63f927e140"; // Replace with your OpenWeatherMap API key
+const API_KEY = 'd31120fef343431863eb0d63f927e140';
 
 function App() {
-  const [city, setCity] = useState("");
+  const [city, setCity] = useState('');
   const [weather, setWeather] = useState(null);
   const [forecast, setForecast] = useState([]);
-  const [theme, setTheme] = useState("dark");
+  const [theme, setTheme] = useState('light');
 
-  const fetchWeather = async (cityName) => {
+  const getWeather = async (cityName) => {
     try {
-      const res = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&appid=${API_KEY}`
-      );
-      const data = await res.json();
-      if (res.ok) {
-        setWeather(data);
-      } else {
-        alert(data.message || "City not found.");
-        setWeather(null);
-      }
+      const weatherRes = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=metric`);
+      const weatherData = await weatherRes.json();
+
+      const forecastRes = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${API_KEY}&units=metric`);
+      const forecastData = await forecastRes.json();
+
+      const dailyForecast = forecastData.list.filter((_, index) => index % 8 === 0).slice(0, 5);
+
+      setWeather(weatherData);
+      setForecast(dailyForecast);
     } catch (error) {
-      alert("Failed to fetch weather.");
-      console.error(error);
+      alert('City not found!');
     }
   };
 
-  const fetchForecast = async (cityName) => {
-    try {
-      const res = await fetch(
-        `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&units=metric&appid=${API_KEY}`
-      );
-      const data = await res.json();
-      if (res.ok) {
-        const daily = data.list.filter((entry) => entry.dt_txt.includes("12:00:00"));
-        setForecast(daily.slice(0, 5));
-      } else {
-        alert(data.message || "Forecast not found.");
-        setForecast([]);
-      }
-    } catch (error) {
-      alert("Failed to fetch forecast.");
-      console.error(error);
-    }
-  };
+  const handleLocation = () => {
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      const { latitude, longitude } = position.coords;
+      const weatherRes = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`);
+      const weatherData = await weatherRes.json();
 
-  const handleSearch = () => {
-    if (!city.trim()) {
-      alert("Please enter a city.");
-      return;
-    }
-    fetchWeather(city);
-    fetchForecast(city);
-  };
+      const forecastRes = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`);
+      const forecastData = await forecastRes.json();
 
-  const handleUseLocation = () => {
-    if (!navigator.geolocation) {
-      alert("Geolocation is not supported by your browser.");
-      return;
-    }
+      const dailyForecast = forecastData.list.filter((_, index) => index % 8 === 0).slice(0, 5);
 
-    navigator.geolocation.getCurrentPosition(
-      async ({ coords }) => {
-        try {
-          const res = await fetch(
-            `https://api.openweathermap.org/data/2.5/weather?lat=${coords.latitude}&lon=${coords.longitude}&units=metric&appid=${API_KEY}`
-          );
-          const data = await res.json();
-          if (res.ok) {
-            setCity(data.name);
-            setWeather(data);
-            fetchForecast(data.name);
-          } else {
-            alert("Unable to get location-based weather.");
-          }
-        } catch (error) {
-          alert("Failed to fetch location weather.");
-          console.error(error);
-        }
-      },
-      () => alert("Permission denied or location unavailable.")
-    );
+      setWeather(weatherData);
+      setForecast(dailyForecast);
+      setCity(weatherData.name);
+    });
   };
 
   const toggleTheme = () => {
-    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
   };
 
   return (
     <div className={`app ${theme}`}>
       <div className="container">
-        <h1>🌦️ WeatherNow by Tasneem</h1>
+        <h1><span role="img" aria-label="cloud">🌦️</span> WeatherNow by Tasneem</h1>
         <p>Get the current weather and forecast anywhere!</p>
 
         <div className="input-group">
-          <input
-            type="text"
-            value={city}
-            placeholder="Enter city"
-            onChange={(e) => setCity(e.target.value)}
-          />
-          <button onClick={handleSearch}>Get Weather</button>
+          <input type="text" placeholder="Enter city" value={city} onChange={(e) => setCity(e.target.value)} />
+          <button onClick={() => getWeather(city)}>Get Weather</button>
         </div>
 
         <div className="button-group">
-          <button onClick={handleUseLocation}>📍 Use My Location</button>
-          <button onClick={toggleTheme}>🌓 Switch Theme</button>
+          <button onClick={handleLocation}><span role="img" aria-label="location">📍</span> Use My Location</button>
+          <button onClick={toggleTheme}><span role="img" aria-label="theme">🌓</span> Switch Theme</button>
         </div>
 
         {weather && (
           <div className="weather-card">
             <h2>{weather.name}</h2>
-            <p>🌡️ {weather.main.temp}°C</p>
-            <p>🌤️ {weather.weather[0].description}</p>
+            <p><span role="img" aria-label="temp">🌡️</span> {weather.main.temp}°C</p>
+            <p><span role="img" aria-label="condition">🌤️</span> {weather.weather[0].description}</p>
           </div>
         )}
 
         {forecast.length > 0 && (
-          <div className="forecast-section">
-            {forecast.map((day, index) => (
-              <div className="forecast-card" key={index}>
-                <strong>{new Date(day.dt_txt).toLocaleDateString()}</strong>
+          <div className="forecast">
+            {forecast.map((day, idx) => (
+              <div key={idx} className="forecast-card">
+                <h4>{new Date(day.dt_txt).toLocaleDateString()}</h4>
                 <p>🌡️ {day.main.temp}°C</p>
                 <p>{day.weather[0].description}</p>
               </div>

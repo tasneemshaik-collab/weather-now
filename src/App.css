@@ -1,86 +1,80 @@
-body, html {
+body {
   margin: 0;
-  padding: 0;
   font-family: 'Segoe UI', sans-serif;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.app.dark {
-  background-color: #121212;
-  color: #fff;
 }
 
 .app.light {
   background-color: #f5f5f5;
-  color: #121212;
+  color: #222;
+}
+
+.app.dark {
+  background-color: #222;
+  color: #f5f5f5;
 }
 
 .container {
-  max-width: 800px;
-  margin: auto;
-  text-align: center;
-  padding: 2rem 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+  min-height: 100vh;
 }
 
-.input-group {
-  margin: 1rem 0;
+h1 {
+  font-size: 2.5rem;
 }
 
-input {
-  padding: 10px;
-  font-size: 16px;
-  width: 250px;
+.input-group input {
+  padding: 0.8rem;
+  width: 60%;
   border-radius: 8px;
   border: none;
-  margin-right: 10px;
-  background-color: #fff;
-  color: #000;
+  margin-right: 1rem;
 }
 
-button {
-  padding: 10px 16px;
-  font-size: 15px;
-  border-radius: 8px;
-  border: none;
-  margin: 5px;
-  cursor: pointer;
-  background-color: #5271ff;
+.input-group button {
+  padding: 0.8rem 1.5rem;
+  background-color: #5673f7;
   color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
-button:hover {
-  background-color: #3a5bd8;
+.button-group {
+  margin-top: 1rem;
 }
 
-.weather-card, .forecast-card {
-  margin-top: 1.5rem;
-  padding: 1rem;
-  border-radius: 10px;
-  transition: background-color 0.3s ease, color 0.3s ease;
+.button-group button {
+  margin-right: 1rem;
+  padding: 0.6rem 1rem;
+  background-color: #5673f7;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
-.app.dark .weather-card,
-.app.dark .forecast-card {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #fff;
-}
-
-.app.light .weather-card,
-.app.light .forecast-card {
-  background-color: #fff;
-  color: #222;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-.forecast-section {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  justify-content: center;
+.weather-card {
+  background-color: rgba(0,0,0,0.1);
   margin-top: 2rem;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+.forecast {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 .forecast-card {
-  width: 140px;
+  background-color: rgba(0,0,0,0.1);
+  padding: 1rem;
+  border-radius: 12px;
+  flex: 1 1 150px;
   text-align: center;
 }
