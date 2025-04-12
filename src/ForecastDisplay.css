@@ -1,27 +1,17 @@
-.forecast-container {
+.forecast {
   display: flex;
+  gap: 1rem;
+  padding: 1rem;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 20px;
-  gap: 16px;
 }
 
 .forecast-card {
-  background-color: var(--card-bg);
+  background: var(--card-bg);
   color: var(--text-color);
+  padding: 1rem;
   border-radius: 12px;
-  padding: 16px;
-  width: 120px;
   text-align: center;
+  width: 120px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s ease;
-}
-
-.forecast-card:hover {
-  transform: scale(1.05);
-}
-
-.icon {
-  font-size: 2rem;
-  margin: 8px 0;
 }

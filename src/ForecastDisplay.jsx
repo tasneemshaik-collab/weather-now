@@ -1,38 +1,31 @@
-// src/ForecastDisplay.jsx
-import React from 'react';
-import './ForecastDisplay.css';
+import React from "react";
+import "./ForecastDisplay.css";
 
-const emojiMap = {
-  Clear: '☀️',
-  Rain: '🌧️',
-  Clouds: '☁️',
-  Snow: '❄️',
-  Thunderstorm: '⛈️',
-  Drizzle: '🌦️',
-  Mist: '🌫️',
-  Smoke: '💨',
-};
+function ForecastDisplay({ forecast }) {
+  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-const ForecastDisplay = ({ forecast }) => {
   return (
-    <div className="forecast-container">
+    <div className="forecast">
       {forecast.map((day, index) => {
         const date = new Date(day.dt * 1000);
-        const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
-        const weatherMain = day.weather[0].main;
-        const emoji = emojiMap[weatherMain] || '❔';
+        const dayName = dayNames[date.getDay()];
+        const temp = day.temp.day.toFixed(2);
+        const icon = day.weather[0].main;
 
         return (
           <div className="forecast-card" key={index}>
-            <div className="day">{dayName}</div>
-            <div className="emoji">{emoji}</div>
-            <div className="temp">🌡️ {day.temp.day.toFixed(2)}°C</div>
-            <div className="humidity">💧 {day.humidity}%</div>
+            <h3>{dayName}</h3>
+            <p>
+              {icon === "Clear" ? "☀️" : icon === "Rain" ? "🌧️" : "☁️"}{" "}
+              {icon}
+            </p>
+            <p>🌡️ {temp}°C</p>
+            <p>💧 {day.humidity}%</p>
           </div>
         );
       })}
     </div>
   );
-};
+}
 
 export default ForecastDisplay;

@@ -1,28 +1,27 @@
-/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import WeatherDisplay from "./WeatherDisplay";
 import ForecastDisplay from "./ForecastDisplay";
-import { getCoordinates, getForecastData } from "./api";
+import { getForecastData, getCoordinates } from "./getForecastData";
 import "./App.css";
-
-const apiKey = "YOUR_API_KEY"; // replace with your real API key
 
 function App() {
   const [city, setCity] = useState("");
   const [weather, setWeather] = useState(null);
   const [forecast, setForecast] = useState([]);
-  const [theme, setTheme] = useState("dark");
+  const [darkMode, setDarkMode] = useState(true);
+
+  const apiKey = import.meta.env.VITE_API_KEY;
 
   const fetchWeather = async (cityName) => {
     try {
-      const res = await fetch(
+      const response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}&units=metric`
       );
-      const data = await res.json();
+      const data = await response.json();
       setWeather(data);
-    } catch (err) {
-      alert("Error fetching weather data.");
-      console.error(err);
+    } catch (error) {
+      alert("Failed to fetch weather data.");
+      console.error(error);
     }
   };
 
@@ -52,33 +51,31 @@ function App() {
 
   const fetchWeatherByCoords = async (lat, lon) => {
     try {
-      const res = await fetch(
+      const response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
       );
-      const data = await res.json();
-      setCity(data.name);
+      const data = await response.json();
       setWeather(data);
-    } catch (err) {
-      alert("Error using location.");
+      setCity(data.name);
+    } catch (error) {
+      alert("Failed to fetch weather by coordinates.");
+      console.error(error);
     }
   };
 
-  const toggleTheme = () =>
-    setTheme((prevTheme) => (prevTheme === "dark" ? "light" : "dark"));
-
   return (
-    <div className={`app ${theme}`}>
+    <div className={darkMode ? "app dark" : "app"}>
       <div className="controls">
         <input
           type="text"
+          placeholder="Enter city..."
           value={city}
           onChange={handleCityChange}
-          placeholder="Enter city"
         />
         <button onClick={handleGetWeather}>Get Weather</button>
         <button onClick={handleUseMyLocation}>📍 Use My Location</button>
         <button onClick={handleShowForecast}>📅 7-Day Forecast</button>
-        <button onClick={toggleTheme}>🌓 Switch Theme</button>
+        <button onClick={() => setDarkMode(!darkMode)}>🌓 Switch Theme</button>
       </div>
 
       {weather && <WeatherDisplay weather={weather} />}
