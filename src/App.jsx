@@ -1,22 +1,25 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import WeatherDisplay from "./WeatherDisplay";
 import ForecastDisplay from "./ForecastDisplay";
-import "./App.css";
 import { getCoordinates, getForecastData } from "./api";
+import "./App.css";
+
+const apiKey = "YOUR_API_KEY"; // replace with your real API key
 
 function App() {
   const [city, setCity] = useState("");
   const [weather, setWeather] = useState(null);
   const [forecast, setForecast] = useState([]);
-  const [darkTheme, setDarkTheme] = useState(true);
-
-  const apiKey = "YOUR_API_KEY"; // Replace with your actual API key
+  const [theme, setTheme] = useState("dark");
 
   const fetchWeather = async (cityName) => {
     try {
-      const { lat, lon } = await getCoordinates(cityName, apiKey);
-      const weatherData = await fetchWeatherByCoords(lat, lon, apiKey);
-      setWeather({ ...weatherData, name: cityName });
+      const res = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}&units=metric`
+      );
+      const data = await res.json();
+      setWeather(data);
     } catch (err) {
       alert("Error fetching weather data.");
       console.error(err);
@@ -33,7 +36,7 @@ function App() {
     try {
       const { lat, lon } = await getCoordinates(city, apiKey);
       const forecastData = await getForecastData(lat, lon, apiKey);
-      setForecast(forecastData.slice(0, 7)); // Only show 7 days
+      setForecast(forecastData);
     } catch (err) {
       alert("Error fetching 7-day forecast.");
       console.error(err);
@@ -43,21 +46,28 @@ function App() {
   const handleUseMyLocation = () => {
     navigator.geolocation.getCurrentPosition((position) => {
       const { latitude, longitude } = position.coords;
-      fetchWeatherByCoords(latitude, longitude, apiKey)
-        .then((data) => {
-          setWeather({ ...data, name: "Your Location" });
-        })
-        .catch((err) => {
-          alert("Unable to fetch location weather.");
-          console.error(err);
-        });
+      fetchWeatherByCoords(latitude, longitude);
     });
   };
 
-  const handleThemeToggle = () => setDarkTheme(!darkTheme);
+  const fetchWeatherByCoords = async (lat, lon) => {
+    try {
+      const res = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
+      );
+      const data = await res.json();
+      setCity(data.name);
+      setWeather(data);
+    } catch (err) {
+      alert("Error using location.");
+    }
+  };
+
+  const toggleTheme = () =>
+    setTheme((prevTheme) => (prevTheme === "dark" ? "light" : "dark"));
 
   return (
-    <div className={`app ${darkTheme ? "dark" : "light"}`}>
+    <div className={`app ${theme}`}>
       <div className="controls">
         <input
           type="text"
@@ -67,8 +77,8 @@ function App() {
         />
         <button onClick={handleGetWeather}>Get Weather</button>
         <button onClick={handleUseMyLocation}>📍 Use My Location</button>
-        <button onClick={handleShowForecast}>📅 5-Day Forecast</button>
-        <button onClick={handleThemeToggle}>🎨 Switch Theme</button>
+        <button onClick={handleShowForecast}>📅 7-Day Forecast</button>
+        <button onClick={toggleTheme}>🌓 Switch Theme</button>
       </div>
 
       {weather && <WeatherDisplay weather={weather} />}
