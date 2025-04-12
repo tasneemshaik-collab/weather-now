@@ -1,39 +1,27 @@
-/* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
-import "./App.css";
+import React, { useState } from "react";
 import WeatherDisplay from "./WeatherDisplay";
 import ForecastDisplay from "./ForecastDisplay";
+import "./App.css";
+import { getCoordinates, getForecastData } from "./api";
 
 function App() {
   const [city, setCity] = useState("");
   const [weather, setWeather] = useState(null);
   const [forecast, setForecast] = useState([]);
-  const [theme, setTheme] = useState("light");
+  const [darkTheme, setDarkTheme] = useState(true);
 
-  const apiKey = "d31120fef343431863eb0d63f927e140"; // <-- Replace with your OpenWeatherMap API key
-
-  useEffect(() => {
-    document.body.className = theme;
-  }, [theme]);
+  const apiKey = "YOUR_API_KEY"; // Replace with your actual API key
 
   const fetchWeather = async (cityName) => {
     try {
-      const weatherRes = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}&units=metric`
-      );
-      const weatherData = await weatherRes.json();
-      if (weatherData.cod !== 200) {
-        alert("City not found");
-        return;
-      }
-      setWeather(weatherData);
-      setForecast([]); // Clear forecast until user clicks forecast
+      const { lat, lon } = await getCoordinates(cityName, apiKey);
+      const weatherData = await fetchWeatherByCoords(lat, lon, apiKey);
+      setWeather({ ...weatherData, name: cityName });
     } catch (err) {
       alert("Error fetching weather data.");
       console.error(err);
     }
   };
-  
 
   const handleCityChange = (e) => setCity(e.target.value);
 
@@ -41,66 +29,46 @@ function App() {
     if (city.trim()) fetchWeather(city);
   };
 
-  const handleUseMyLocation = () => {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        fetchWeatherByCoords(latitude, longitude);
-      },
-      () => alert("Location access denied.")
-    );
-  };
-
   const handleShowForecast = async () => {
-    if (!weather || !weather.coord) return;
-  
-    const { lat, lon } = weather.coord;
     try {
-      const forecastRes = await fetch(
-        `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
-      );
-      const forecastData = await forecastRes.json();
-      const daily = forecastData.list.filter((item) =>
-        item.dt_txt.includes("12:00:00")
-      );
-      setForecast(daily.slice(0, 7));
+      const { lat, lon } = await getCoordinates(city, apiKey);
+      const forecastData = await getForecastData(lat, lon, apiKey);
+      setForecast(forecastData.slice(0, 7)); // Only show 7 days
     } catch (err) {
-      alert("Error fetching forecast.");
-    }
-  };
-  
-
-  const fetchWeatherByCoords = async (lat, lon) => {
-    try {
-      const res = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
-      );
-      const data = await res.json();
-      if (data.name) fetchWeather(data.name);
-    } catch (err) {
-      alert("Unable to get weather for your location.");
+      alert("Error fetching 7-day forecast.");
+      console.error(err);
     }
   };
 
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  const handleUseMyLocation = () => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      const { latitude, longitude } = position.coords;
+      fetchWeatherByCoords(latitude, longitude, apiKey)
+        .then((data) => {
+          setWeather({ ...data, name: "Your Location" });
+        })
+        .catch((err) => {
+          alert("Unable to fetch location weather.");
+          console.error(err);
+        });
+    });
   };
+
+  const handleThemeToggle = () => setDarkTheme(!darkTheme);
 
   return (
-    <div className="app">
-      <h1>🌦️ WeatherNow by Tasneem</h1>
-
+    <div className={`app ${darkTheme ? "dark" : "light"}`}>
       <div className="controls">
         <input
           type="text"
-          placeholder="Enter city"
           value={city}
           onChange={handleCityChange}
+          placeholder="Enter city"
         />
         <button onClick={handleGetWeather}>Get Weather</button>
         <button onClick={handleUseMyLocation}>📍 Use My Location</button>
         <button onClick={handleShowForecast}>📅 5-Day Forecast</button>
-        <button onClick={toggleTheme}>🌓 Switch Theme</button>
+        <button onClick={handleThemeToggle}>🎨 Switch Theme</button>
       </div>
 
       {weather && <WeatherDisplay weather={weather} />}

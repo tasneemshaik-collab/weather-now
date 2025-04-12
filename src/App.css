@@ -1,91 +1,64 @@
 :root {
-  --bg-color: #f5f5f5;
-  --text-color: #222;
-  --card-bg: #ffffffcc;
-  --primary-accent: #0077ff;
-}
+  --bg-color-dark: #12232e;
+  --text-color-dark: #ffffff;
+  --card-bg-dark: #d3dbe4;
 
-body.dark {
-  --bg-color: #0f2027;
-  --text-color: #f0f0f0;
-  --card-bg: #ffffff1a;
-  --primary-accent: #00c2ff;
+  --bg-color-light: #f4f4f4;
+  --text-color-light: #222;
+  --card-bg-light: #ffffff;
 }
 
 body {
   margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(to top right, #0f2027, #203a43, #2c5364);
-  background-size: 400% 400%;
-  animation: windFlow 15s ease infinite;
-  color: var(--text-color);
+  font-family: "Segoe UI", sans-serif;
+}
+
+.app {
   min-height: 100vh;
-  transition: background 0.5s ease;
-  padding: 2rem;
-}
-
-@keyframes windFlow {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-h1 {
-  font-size: 2.5rem;
-  color: var(--primary-accent);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-input, button {
-  padding: 0.6rem 1rem;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  margin: 0.5rem;
-  font-size: 1rem;
-}
-
-button {
-  background-color: var(--primary-accent);
-  color: white;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #005fcc;
-}
-
-.weather-card, .forecast-card {
-  background-color: var(--card-bg);
-  backdrop-filter: blur(10px);
-  padding: 1rem;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-  margin: 1rem 0;
+  padding: 20px;
   transition: all 0.3s ease;
 }
 
-.container {
-  max-width: 900px;
-  margin: 0 auto;
-  text-align: center;
+.app.dark {
+  background-color: var(--bg-color-dark);
+  color: var(--text-color-dark);
+  --card-bg: var(--card-bg-dark);
+  --text-color: var(--text-color-dark);
+}
+
+.app.light {
+  background-color: var(--bg-color-light);
+  color: var(--text-color-light);
+  --card-bg: var(--card-bg-light);
+  --text-color: var(--text-color-light);
 }
 
 .controls {
-  margin-top: 1rem;
-}
-.sidebar {
-  position: fixed;
-  top: 6rem;
-  right: 1rem;
   display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 12px;
-  padding: 1rem;
-  backdrop-filter: blur(5px);
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.controls input {
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.controls button {
+  padding: 10px 16px;
+  border: none;
+  background-color: #0077cc;
+  color: white;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.controls button:hover {
+  background-color: #005fa3;
 }
