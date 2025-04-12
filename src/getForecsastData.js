@@ -11,6 +11,12 @@ export async function getCoordinates(city, apiKey) {
       `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=current,minutely,hourly,alerts&appid=${apiKey}&units=metric`
     );
     const data = await response.json();
-    return data.daily.slice(0, 7); // Return 7 days only
+  
+    if (!data.daily || !Array.isArray(data.daily)) {
+      throw new Error("Invalid forecast data structure.");
+    }
+  
+    return data.daily.slice(0, 7);
   }
+  
   

@@ -41,6 +41,7 @@ function App() {
       console.error(err);
     }
   };
+  
 
   const handleUseMyLocation = () => {
     navigator.geolocation.getCurrentPosition((position) => {
