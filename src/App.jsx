@@ -63,7 +63,7 @@ function App() {
       const daily = forecastData.list.filter((item) =>
         item.dt_txt.includes("12:00:00")
       );
-      setForecast(daily.slice(0, 5));
+      setForecast(daily.slice(0, 7));
     } catch (err) {
       alert("Error fetching forecast.");
     }
