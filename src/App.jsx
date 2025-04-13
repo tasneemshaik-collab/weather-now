@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import WeatherDisplay from "./WeatherDisplay";
@@ -9,7 +10,7 @@ function App() {
   const [forecast, setForecast] = useState([]);
   const [theme, setTheme] = useState("light");
 
-  const apiKey = "YOUR_API_KEY"; // replace this
+  const apiKey = "d31120fef343431863eb0d63f927e140"; // replace this
 
   useEffect(() => {
     document.body.className = theme;
@@ -68,6 +69,7 @@ function App() {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
 
   return (
+    
     <div className="app">
       <h1>🌦️ WeatherNow by Tasneem</h1>
       <p>Get the current weather and forecast anywhere!</p>
