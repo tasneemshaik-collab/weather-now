@@ -1,19 +1,17 @@
-import React from 'react';
-import './ForecastDisplay.css';
+import React from "react";
+import "./ForecastDisplay.css";
 
 function ForecastDisplay({ forecast }) {
   return (
     <div className="forecast-container">
-      <h3>5-Day Forecast</h3>
-      <div className="forecast-grid">
-        {forecast.map((day, idx) => (
-          <div key={idx} className="forecast-card">
-            <p>{day.date}</p>
-            <img src={`https://openweathermap.org/img/wn/${day.icon}@2x.png`} alt="icon" />
-            <p>{day.temp}°C</p>
-          </div>
-        ))}
-      </div>
+      {forecast.map((item, index) => (
+        <div key={index} className="forecast-card">
+          <h4>{new Date(item.dt_txt).toLocaleDateString(undefined, { weekday: "short" })}</h4>
+          <p>{item.weather[0].main}</p>
+          <p>🌡 {item.main.temp}°C</p>
+          <p>💧 {item.main.humidity}%</p>
+        </div>
+      ))}
     </div>
   );
 }

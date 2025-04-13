@@ -1,58 +1,114 @@
-import React, { useState, useEffect } from 'react';
-import WeatherDisplay from './WeatherDisplay';
-import ForecastDisplay from './ForecastDisplay';
-import getForecastData from './getForecastData';
+import React, { useState } from 'react';
 import './App.css';
-import { toggleTheme, applySavedTheme } from './theme';
 
-function App() {
+const App = () => {
+  const [city, setCity] = useState('');
   const [weather, setWeather] = useState(null);
   const [forecast, setForecast] = useState([]);
-  const [location, setLocation] = useState('New York');
+  const [theme, setTheme] = useState('light');
+  const [showForecast, setShowForecast] = useState(false);
 
-  useEffect(() => {
-    applySavedTheme();
-    fetchWeather(location);
-  }, [location]);
+  const API_KEY = 'YOUR_API_KEY'; // Replace with your OpenWeatherMap API key
 
-  const fetchWeather = async (loc) => {
-    const data = await getForecastData(loc);
-    setWeather(data.current);
-    setForecast(data.forecast);
+  const getWeather = async () => {
+    if (!city) return;
+
+    try {
+      const res = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`
+      );
+      const data = await res.json();
+      setWeather(data);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const handleLocation = () => {
+  const getForecast = async () => {
+    if (!city) return;
+
+    try {
+      const res = await fetch(
+        `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=metric`
+      );
+      const data = await res.json();
+      const daily = data.list.filter((_, index) => index % 8 === 0);
+      setForecast(daily);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const toggleForecast = async () => {
+    if (!showForecast && city) await getForecast();
+    setShowForecast(prev => !prev);
+  };
+
+  const toggleTheme = () => {
+    setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
+  };
+
+  const handleUseLocation = () => {
     navigator.geolocation.getCurrentPosition(async (position) => {
       const { latitude, longitude } = position.coords;
-      const response = await getForecastData(`${latitude},${longitude}`);
-      setLocation(response.city);
-      setWeather(response.current);
-      setForecast(response.forecast);
+      try {
+        const res = await fetch(
+          `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`
+        );
+        const data = await res.json();
+        setCity(data.name);
+        setWeather(data);
+      } catch (err) {
+        console.error(err);
+      }
     });
   };
 
   return (
-    <div className="app">
-      <header>
-        <h1>WeatherNow</h1>
-        <button onClick={toggleTheme}>Switch Theme</button>
-      </header>
+    <div className={`app ${theme}`}>
+      <div className="container">
+        <h1>🌦️ WeatherNow by Tasneem</h1>
+        <p>Check the current weather in any city around the world!</p>
 
-      <div className="controls">
-        <input
-          type="text"
-          placeholder="Enter city..."
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') setLocation(e.target.value);
-          }}
-        />
-        <button onClick={handleLocation}>Use My Location</button>
+        <div className="input-group">
+          <input
+            type="text"
+            placeholder="Enter city..."
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+          />
+          <button onClick={getWeather}>Get Weather</button>
+        </div>
+
+        {weather && (
+          <div className="weather-card">
+            <h2>{weather.name}</h2>
+            <p>🌡️ {weather.main.temp}°C</p>
+            <p>🌤️ {weather.weather[0].description}</p>
+          </div>
+        )}
+
+        {showForecast && forecast.length > 0 && (
+          <div className="forecast-container">
+            {forecast.map((item, index) => (
+              <div className="forecast-card" key={index}>
+                <strong>{new Date(item.dt_txt).toLocaleDateString()}</strong>
+                <p>🌡️ {item.main.temp}°C</p>
+                <p>🌤️ {item.weather[0].description}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <h3>Explore More</h3>
+        <div className="buttons">
+          <button onClick={handleUseLocation}>📍 Use My Location</button>
+          <button onClick={toggleForecast}>🗓️ 5-Day Forecast</button>
+          <button onClick={toggleTheme}>🎨 Switch Theme</button>
+        </div>
       </div>
-
-      {weather && <WeatherDisplay data={weather} city={location} />}
-      {forecast.length > 0 && <ForecastDisplay forecast={forecast} />}
     </div>
   );
-}
+};
 
 export default App;

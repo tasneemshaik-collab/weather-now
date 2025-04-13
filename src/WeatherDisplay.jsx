@@ -1,15 +1,18 @@
-import React from 'react';
-import './WeatherDisplay.css';
+import React from "react";
+import "./WeatherDisplay.css";
 
-function WeatherDisplay({ data, city }) {
+function WeatherDisplay({ weather }) {
+  const { name, main, weather: info, wind } = weather;
+
   return (
-    <div className="weather-display">
-      <h2>{city}</h2>
-      <p>{data.temp}°C</p>
-      <p>{data.description}</p>
-      <img src={`https://openweathermap.org/img/wn/${data.icon}@2x.png`} alt="weather" />
+    <div className="weather-card">
+      <h2>{name}</h2>
+      <p>{info[0].description}</p>
+      <p>🌡 Temp: {main.temp}°C</p>
+      <p>💨 Wind: {wind.speed} m/s</p>
+      <p>💧 Humidity: {main.humidity}%</p>
     </div>
   );
 }
 
-export default WeatherDisplay;
+export default WeatherDisplay

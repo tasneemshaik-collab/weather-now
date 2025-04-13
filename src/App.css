@@ -1,33 +1,91 @@
-body.light {
-  background-color: #f0f8ff;
-  color: #000;
+body.light{
+  --bg-color: #f5f5f5;
+  --text-color: #222;
+  --card-bg: #ffffffcc;
+  --primary-accent: #0077ff;
 }
 
 body.dark {
-  background-color: #1e1e2f;
-  color: #fff;
+  --bg-color: #0f2027;
+  --text-color: #f0f0f0;
+  --card-bg: #ffffff1a;
+  --primary-accent: #00c2ff;
 }
 
-.app {
-  max-width: 600px;
-  margin: auto;
-  text-align: center;
-  padding: 1rem;
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to top right, #0f2027, #203a43, #2c5364);
+  background-size: 400% 400%;
+  animation: windFlow 15s ease infinite;
+  color: var(--text-color);
+  min-height: 100vh;
+  transition: background 0.5s ease;
+  padding: 2rem;
 }
 
-header {
+@keyframes windFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+h1 {
+  font-size: 2.5rem;
+  color: var(--primary-accent);
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
+}
+
+input, button {
+  padding: 0.6rem 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin: 0.5rem;
+  font-size: 1rem;
 }
 
 button {
-  margin: 0.5rem;
-  padding: 0.5rem 1rem;
+  background-color: var(--primary-accent);
+  color: white;
+  border: none;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.controls input {
-  padding: 0.5rem;
-  margin-right: 0.5rem;
+button:hover {
+  background-color: #005fcc;
+}
+
+.weather-card, .forecast-card {
+  background-color: var(--card-bg);
+  backdrop-filter: blur(10px);
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  margin: 1rem 0;
+  transition: all 0.3s ease;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.controls {
+  margin-top: 1rem;
+}
+.sidebar {
+  position: fixed;
+  top: 6rem;
+  right: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  padding: 1rem;
+  backdrop-filter: blur(5px);
 }
