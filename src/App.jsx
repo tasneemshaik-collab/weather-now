@@ -83,10 +83,10 @@ function App() {
         <button onClick={handleUseMyLocation}>📍 Use My Location</button>
         <button onClick={toggleTheme}>🌓 Switch Theme</button>
       </div>
+      {weather && <WeatherDisplay weather={weather} />}
       <h4>
         Next 5 Days Forecast
       </h4>
-      {weather && <WeatherDisplay weather={weather} />}
       {forecast.length > 0 && <ForecastDisplay forecast={forecast} />}
     </div>
   );
