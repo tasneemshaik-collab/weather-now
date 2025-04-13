@@ -72,8 +72,6 @@ function App() {
     
     <div className="app">
       <h1>🌦️ WeatherNow by Tasneem</h1>
-      <p>Get the current weather and forecast anywhere!</p>
-
       <div className="controls">
         <input
           type="text"
@@ -85,7 +83,9 @@ function App() {
         <button onClick={handleUseMyLocation}>📍 Use My Location</button>
         <button onClick={toggleTheme}>🌓 Switch Theme</button>
       </div>
-
+      <h4>
+        Next 5 Days Forecast
+      </h4>
       {weather && <WeatherDisplay weather={weather} />}
       {forecast.length > 0 && <ForecastDisplay forecast={forecast} />}
     </div>
