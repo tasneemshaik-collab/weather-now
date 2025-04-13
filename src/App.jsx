@@ -1,85 +1,55 @@
-import React, { useState } from "react";
-import WeatherDisplay from "./WeatherDisplay";
-import ForecastDisplay from "./ForecastDisplay";
-import { getForecastData, getCoordinates } from "./getForecastData";
-import "./App.css";
+import React, { useState, useEffect } from 'react';
+import WeatherDisplay from './WeatherDisplay';
+import ForecastDisplay from './ForecastDisplay';
+import getForecastData from './getForecastData';
+import './App.css';
+import { toggleTheme, applySavedTheme } from './theme';
 
 function App() {
-  const [city, setCity] = useState("");
   const [weather, setWeather] = useState(null);
   const [forecast, setForecast] = useState([]);
-  const [darkMode, setDarkMode] = useState(true);
+  const [location, setLocation] = useState('New York');
 
-  const apiKey = import.meta.env.VITE_API_KEY;
+  useEffect(() => {
+    applySavedTheme();
+    fetchWeather(location);
+  }, [location]);
 
-  const fetchWeather = async (cityName) => {
-    try {
-      const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}&units=metric`
-      );
-      const data = await response.json();
-      setWeather(data);
-    } catch (error) {
-      alert("Failed to fetch weather data.");
-      console.error(error);
-    }
+  const fetchWeather = async (loc) => {
+    const data = await getForecastData(loc);
+    setWeather(data.current);
+    setForecast(data.forecast);
   };
 
-  const handleCityChange = (e) => setCity(e.target.value);
-
-  const handleGetWeather = () => {
-    if (city.trim()) fetchWeather(city);
-  };
-
-  const handleShowForecast = async () => {
-    try {
-      const { lat, lon } = await getCoordinates(city, apiKey);
-      const forecastData = await getForecastData(lat, lon, apiKey);
-      setForecast(forecastData);
-    } catch (err) {
-      alert("Error fetching 7-day forecast.");
-      console.error(err);
-    }
-  };
-  
-
-  const handleUseMyLocation = () => {
-    navigator.geolocation.getCurrentPosition((position) => {
+  const handleLocation = () => {
+    navigator.geolocation.getCurrentPosition(async (position) => {
       const { latitude, longitude } = position.coords;
-      fetchWeatherByCoords(latitude, longitude);
+      const response = await getForecastData(`${latitude},${longitude}`);
+      setLocation(response.city);
+      setWeather(response.current);
+      setForecast(response.forecast);
     });
   };
 
-  const fetchWeatherByCoords = async (lat, lon) => {
-    try {
-      const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
-      );
-      const data = await response.json();
-      setWeather(data);
-      setCity(data.name);
-    } catch (error) {
-      alert("Failed to fetch weather by coordinates.");
-      console.error(error);
-    }
-  };
-
   return (
-    <div className={darkMode ? "app dark" : "app"}>
+    <div className="app">
+      <header>
+        <h1>WeatherNow</h1>
+        <button onClick={toggleTheme}>Switch Theme</button>
+      </header>
+
       <div className="controls">
         <input
           type="text"
           placeholder="Enter city..."
-          value={city}
-          onChange={handleCityChange}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') setLocation(e.target.value);
+          }}
         />
-        <button onClick={handleGetWeather}>Get Weather</button>
-        <button onClick={handleUseMyLocation}>📍 Use My Location</button>
-        <button onClick={handleShowForecast}>📅 7-Day Forecast</button>
-        <button onClick={() => setDarkMode(!darkMode)}>🌓 Switch Theme</button>
+        <button onClick={handleLocation}>Use My Location</button>
       </div>
 
-      {weather && <WeatherDisplay weather={weather} />}
+      {weather && <WeatherDisplay data={weather} city={location} />}
       {forecast.length > 0 && <ForecastDisplay forecast={forecast} />}
     </div>
   );

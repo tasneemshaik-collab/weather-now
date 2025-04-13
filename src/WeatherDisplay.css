@@ -1,27 +1,6 @@
 .weather-display {
-    background-color: var(--card-bg);
-    padding: 2rem;
-    margin-top: 2rem;
-    border-radius: 12px;
-    text-align: center;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(10px);
-  }
-  
-  .weather-display h2 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    color: var(--primary-accent);
-  }
-  
-  .weather-display p {
-    font-size: 1.1rem;
-    margin: 0.5rem 0;
-  }
-  
-  .weather-icon {
-    width: 64px;
-    height: 64px;
-    margin: 1rem auto;
-  }
-  
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-top: 1rem;
+}

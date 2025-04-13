@@ -1,45 +1,19 @@
-import React from "react";
-import "./ForecastDisplay.css";
-
-// Map weather condition to emoji
-const emojiMap = {
-  Clear: "☀️",
-  Clouds: "☁️",
-  Rain: "🌧️",
-  Drizzle: "🌦️",
-  Thunderstorm: "⛈️",
-  Snow: "❄️",
-  Mist: "🌫️",
-  Smoke: "🌫️",
-  Haze: "🌫️",
-  Dust: "🌫️",
-  Fog: "🌫️",
-  Sand: "🌫️",
-  Ash: "🌋",
-  Squall: "🌬️",
-  Tornado: "🌪️",
-};
+import React from 'react';
+import './ForecastDisplay.css';
 
 function ForecastDisplay({ forecast }) {
   return (
     <div className="forecast-container">
-      {forecast.map((item, index) => {
-        const date = new Date(item.dt_txt).toLocaleDateString(undefined, {
-          weekday: "short",
-        });
-        const weatherMain = item.weather[0].main;
-        const emoji = emojiMap[weatherMain] || "🌈"; // default emoji
-
-        return (
-          <div key={index} className="forecast-card">
-            <h4>{date}</h4>
-            <div className="forecast-emoji">{emoji}</div>
-            <p>{weatherMain}</p>
-            <p>🌡 {item.main.temp}°C</p>
-            <p>💧 {item.main.humidity}%</p>
+      <h3>5-Day Forecast</h3>
+      <div className="forecast-grid">
+        {forecast.map((day, idx) => (
+          <div key={idx} className="forecast-card">
+            <p>{day.date}</p>
+            <img src={`https://openweathermap.org/img/wn/${day.icon}@2x.png`} alt="icon" />
+            <p>{day.temp}°C</p>
           </div>
-        );
-      })}
+        ))}
+      </div>
     </div>
   );
 }

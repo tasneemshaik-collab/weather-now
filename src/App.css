@@ -1,64 +1,33 @@
-:root {
-  --bg-color-dark: #12232e;
-  --text-color-dark: #ffffff;
-  --card-bg-dark: #d3dbe4;
-
-  --bg-color-light: #f4f4f4;
-  --text-color-light: #222;
-  --card-bg-light: #ffffff;
+body.light {
+  background-color: #f0f8ff;
+  color: #000;
 }
 
-body {
-  margin: 0;
-  font-family: "Segoe UI", sans-serif;
+body.dark {
+  background-color: #1e1e2f;
+  color: #fff;
 }
 
 .app {
-  min-height: 100vh;
-  padding: 20px;
-  transition: all 0.3s ease;
+  max-width: 600px;
+  margin: auto;
+  text-align: center;
+  padding: 1rem;
 }
 
-.app.dark {
-  background-color: var(--bg-color-dark);
-  color: var(--text-color-dark);
-  --card-bg: var(--card-bg-dark);
-  --text-color: var(--text-color-dark);
-}
-
-.app.light {
-  background-color: var(--bg-color-light);
-  color: var(--text-color-light);
-  --card-bg: var(--card-bg-light);
-  --text-color: var(--text-color-light);
-}
-
-.controls {
+header {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-  margin-bottom: 20px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+button {
+  margin: 0.5rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
 }
 
 .controls input {
-  padding: 10px;
-  font-size: 1rem;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
-
-.controls button {
-  padding: 10px 16px;
-  border: none;
-  background-color: #0077cc;
-  color: white;
-  font-weight: bold;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.controls button:hover {
-  background-color: #005fa3;
+  padding: 0.5rem;
+  margin-right: 0.5rem;
 }
